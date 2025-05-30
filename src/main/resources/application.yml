@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: monitor-sensors
+  datasource:
+    url: ${DATASOURCE_URL}
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+jwt:
+  secret: adsofksadpofkaopdkfa0osdk-fd0skf-a0weklf0ekrewkawrpokeow
+  lifetime: 30m
+
+server:
+  port: 8585
