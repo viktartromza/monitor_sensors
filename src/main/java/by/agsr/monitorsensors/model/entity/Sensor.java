@@ -10,6 +10,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,6 +22,10 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
+@NamedEntityGraph(name = "SensorFullGraph", attributeNodes = {
+        @NamedAttributeNode("type"),
+        @NamedAttributeNode("unit")
+})
 public class Sensor {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

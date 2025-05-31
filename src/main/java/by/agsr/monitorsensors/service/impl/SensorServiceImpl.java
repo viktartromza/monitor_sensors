@@ -7,11 +7,13 @@ import by.agsr.monitorsensors.mapper.SensorMapper;
 import by.agsr.monitorsensors.model.dto.CreateSensorRqDto;
 import by.agsr.monitorsensors.model.dto.SensorRsDto;
 import by.agsr.monitorsensors.model.dto.UpdateSensorRqDto;
+import by.agsr.monitorsensors.model.entity.Sensor;
 import by.agsr.monitorsensors.model.entity.Unit;
 import by.agsr.monitorsensors.repository.SensorRepository;
 import by.agsr.monitorsensors.repository.TypeRepository;
 import by.agsr.monitorsensors.service.SensorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,6 +51,33 @@ public class SensorServiceImpl implements SensorService {
     }
 
     @Override
+    public List<SensorRsDto> variableSearchByNameAndModel(@Nullable String name,
+                                                          @Nullable String model,
+                                                          boolean onlyFirstCharacters) {
+        boolean isNameBlank = isBlank(name);
+        boolean isModelBlank = isBlank(model);
+
+        if (isNameBlank && isModelBlank) {
+            return getAll();
+        }
+
+        List<Sensor> sensors;
+
+        if (isNameBlank) {
+            sensors = searchByModel(model, onlyFirstCharacters);
+        } else if (isModelBlank) {
+            sensors = searchByName(name, onlyFirstCharacters);
+        } else {
+            sensors = searchByNameAndModel(name, model, onlyFirstCharacters);
+        }
+
+        return sensors.stream()
+                .map(mapper::toRsDto)
+                .toList();
+    }
+
+
+    @Override
     public void updateSensor(UpdateSensorRqDto rq) {
         var sensorId = rq.getId();
         var currentSensor = repository.findById(sensorId)
@@ -62,5 +91,31 @@ public class SensorServiceImpl implements SensorService {
         repository.deleteById(sensorId);
     }
 
+    private boolean isBlank(@Nullable String str) {
+        return str == null || str.isBlank();
+    }
 
+    private List<Sensor> searchByName(String name, boolean onlyFirstCharacters) {
+        if (onlyFirstCharacters) {
+            return repository.findSensorsByNameStartingWithIgnoreCase(name);
+        } else {
+            return repository.findSensorByNameContainingIgnoreCase(name);
+        }
+    }
+
+    private List<Sensor> searchByModel(String model, boolean onlyFirstCharacters) {
+        if (onlyFirstCharacters) {
+            return repository.findSensorsByModelStartingWithIgnoreCase(model);
+        } else {
+            return repository.findSensorByModelContainingIgnoreCase(model);
+        }
+    }
+
+    private List<Sensor> searchByNameAndModel(String name, String model, boolean onlyFirstCharacters) {
+        if (onlyFirstCharacters) {
+            return repository.findSensorsByNameStartingWithIgnoreCaseAndModelStartingWithIgnoreCase(name, model);
+        } else {
+            return repository.findSensorsByNameContainingIgnoreCaseAndModelContainingIgnoreCase(name, model);
+        }
+    }
 }

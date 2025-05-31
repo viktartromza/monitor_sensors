@@ -12,6 +12,7 @@ public interface SensorService {
     SensorRsDto save(CreateSensorRqDto rq);
 
     List<SensorRsDto> getAll();
+    List<SensorRsDto> variableSearchByNameAndModel(String name, String model, boolean onlyFirstCharacters);
 
     void deleteSensor(UUID sensorId);
 
