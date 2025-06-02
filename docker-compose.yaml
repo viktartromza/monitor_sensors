@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  db_primary:
+    container_name: db_primary
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=admin
+      - PGDATA=/var/lib/postgresql/data/db_primary_files/
+    image: postgres:latest
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+    networks:
+      - agsr_network
+
+  db_summary:
+    container_name: db_summary
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=summary_db
+      - PGDATA=/var/lib/postgresql/data/db_summary_files/
+    image: postgres:latest
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+    networks:
+      - agsr_network
+
+  app:
+    container_name: monitor_sensors
+    image: monitor_sensors:1.0.0
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8585:8585"
+    environment:
+      - DATASOURCE_USERNAME=admin
+      - DATASOURCE_PASSWORD=admin
+      - DATASOURCE_URL=jdbc:postgresql://db_primary/admin
+      - SM_DATASOURCE_USERNAME=admin
+      - SM_DATASOURCE_PASSWORD=admin
+      - SM_DATASOURCE_URL=jdbc:postgresql://db_summary/summary_db
+    depends_on:
+      db_primary:
+        condition: service_healthy
+      db_summary:
+        condition: service_healthy
+
+    networks:
+      - agsr_network
+
+networks:
+  agsr_network:
+    driver: bridge

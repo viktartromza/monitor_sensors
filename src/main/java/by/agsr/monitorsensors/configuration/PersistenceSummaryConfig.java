@@ -1,6 +1,8 @@
 package by.agsr.monitorsensors.configuration;
 
+import by.agsr.monitorsensors.model.summaryentity.Report;
 import liquibase.integration.spring.SpringLiquibase;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -25,6 +27,7 @@ import static by.agsr.monitorsensors.configuration.liquibase.LiquiBaseHelper.spr
         entityManagerFactoryRef = "summaryEntityManager",
         transactionManagerRef = "summaryTransactionManager"
 )
+@EntityScan(basePackageClasses = Report.class)
 public class PersistenceSummaryConfig {
 
     @Bean
@@ -33,7 +36,7 @@ public class PersistenceSummaryConfig {
                 = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(summaryDataSource());
         em.setPackagesToScan(
-                "by.agsr.monitorsensors.model.summaryEntity");
+                "by.agsr.monitorsensors.model.summaryentity");
 
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
@@ -56,6 +59,7 @@ public class PersistenceSummaryConfig {
                 summaryEntityManager(env).getObject());
         return transactionManager;
     }
+
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource.summary")
     public DataSource summaryDataSource() {
