@@ -2,17 +2,24 @@ spring:
   application:
     name: monitor-sensors
   datasource:
-    url: ${DATASOURCE_URL}
-    username: ${DATASOURCE_USERNAME}
-    password: ${DATASOURCE_PASSWORD}
-    driver-class-name: org.postgresql.Driver
+    primary:
+      jdbcUrl: ${DATASOURCE_URL}
+      username: ${DATASOURCE_USERNAME}
+      password: ${DATASOURCE_PASSWORD}
+      driver-class-name: org.postgresql.Driver
+      liquibase:
+        change-log: classpath:db/changelog/db.changelog-master.yaml
+    summary:
+      jdbcUrl: ${SM_DATASOURCE_URL}
+      username: ${SM_DATASOURCE_USERNAME}
+      password: ${SM_DATASOURCE_PASSWORD}
+      driver-class-name: org.postgresql.Driver
+      liquibase:
+        change-log: classpath:summary-db/changelog/db.changelog-master.yaml
   jpa:
     hibernate:
       ddl-auto: validate
     show-sql: true
-
-  liquibase:
-    change-log: classpath:db/changelog/db.changelog-master.yaml
 
 jwt:
   secret: adsofksadpofkaopdkfa0osdk-fd0skf-a0weklf0ekrewkawrpokeow

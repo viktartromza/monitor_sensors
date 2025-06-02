@@ -28,7 +28,7 @@ import java.util.List;
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfiguration {
-
+    private static final String ADMIN = "ADMIN";
     private final UserDetailsProvider userDetailsProvider;
     private final JwtRequestFilter jwtRequestFilter;
     private final PasswordEncoder passwordEncoder;
@@ -47,9 +47,10 @@ public class SecurityConfiguration {
                 }))
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/types/**").hasRole("ADMIN")
-                        .requestMatchers("/sensors/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET,"/sensors").hasRole("Viewer")
+                        .requestMatchers(HttpMethod.GET,"/sensors/**").authenticated()
+                        .requestMatchers("/types/**").hasRole(ADMIN)
+                        .requestMatchers("/sensors/**").hasRole(ADMIN)
+                        .requestMatchers("/report/**").hasRole(ADMIN)
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/swagger-ui**").permitAll()
                         .requestMatchers("/swagger-resources/**").permitAll()

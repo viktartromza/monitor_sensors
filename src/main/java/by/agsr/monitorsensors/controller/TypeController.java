@@ -4,8 +4,6 @@ package by.agsr.monitorsensors.controller;
 import by.agsr.monitorsensors.model.dto.TypeRsDto;
 import by.agsr.monitorsensors.service.TypeService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -24,7 +22,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/types")
 @RequiredArgsConstructor
-@Tag(name = "Types")
 public class TypeController {
     private final TypeService service;
 

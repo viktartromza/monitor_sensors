@@ -1,5 +1,5 @@
 package by.agsr.monitorsensors.controller;
 
-public class UnitController {
+public class UserController {
     //TODO
 }

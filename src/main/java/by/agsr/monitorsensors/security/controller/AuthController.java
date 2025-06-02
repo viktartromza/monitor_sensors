@@ -19,15 +19,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "Auth Operations", description = "Auth / Create user operations")
+@Tag(name = "Auth Operations", description = "Authorization")
 public class AuthController {
 
     private final UserDetailsProvider userDetailsProvider;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
 
+    @Operation(summary = "Авторизация пользователя")
     @PostMapping("/auth")
-    @Operation(summary = "Sign in for user", tags = "Auth Operations")
     public ResponseEntity<?> createAuthToken(@RequestBody JwtRequest jwtRequest) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(jwtRequest.getUsername(), jwtRequest.getPassword()));

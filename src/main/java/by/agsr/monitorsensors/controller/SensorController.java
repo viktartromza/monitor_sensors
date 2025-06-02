@@ -33,14 +33,22 @@ import java.util.UUID;
 public class SensorController {
     private final SensorService service;
 
+    @Operation(
+            summary = "Добавление датчика",
+            description = "Данный метод позволяет пользователю с ролью Administrator добавлять датчик в базу данных",
+            security = {@SecurityRequirement(name = "bearer-key")}
+    )
     @PostMapping("/create")
-    // @ApiOperation(value = "Add sensor", tags = "Sensors", authorizations = @Authorization(value = "jwtToken"))
     public ResponseEntity<SensorRsDto> createSensor(@Valid @RequestBody CreateSensorRqDto rq) {
         return new ResponseEntity<>(service.save(rq), HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Просмотр списка датчиков",
+            description = "Данный метод позволяет пользователю с ролью Administrator или Viewer просматривать список датчиков",
+            security = {@SecurityRequirement(name = "bearer-key")}
+    )
     @GetMapping("")
-    // @ApiOperation(value = "Get all sensor types", tags = "Types", authorizations = @Authorization(value = "jwtToken"))
     public ResponseEntity<List<SensorRsDto>> getAllSensors() {
         return new ResponseEntity<>(service.getAll(), HttpStatus.OK);
     }
@@ -59,17 +67,23 @@ public class SensorController {
         return new ResponseEntity<>(service.variableSearchByNameAndModel(name, model, onlyFirstCharacters), HttpStatus.OK);
     }
 
-    //@ApiOperation(value = "Deleting sensor", tags = "Sensors", authorizations = @Authorization(value = "jwtToken"))
+    @Operation(
+            summary = "Удаление датчика",
+            description = "Данный метод позволяет пользователю с ролью Administrator удалять запись о датчике",
+            security = {@SecurityRequirement(name = "bearer-key")}
+    )
     @DeleteMapping()
-    //@Secured("ROLE_GAME_DEV")
     public ResponseEntity<Void> deleteSensor(@RequestParam UUID sensorId) {
         service.deleteSensor(sensorId);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();//TODO only for gameDev and Admins
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @Operation(
+            summary = "Обновление датчика",
+            description = "Данный метод позволяет пользователю с ролью Administrator обновлять запись о датчике",
+            security = {@SecurityRequirement(name = "bearer-key")}
+    )
     @PutMapping("/update")
-    // @ApiOperation(value = "Updating sensor", tags = "Sensors", authorizations = @Authorization(value = "jwtToken"))
-    //@Secured("ROLE_USER")
     public ResponseEntity<Void> updateSensor(@RequestBody UpdateSensorRqDto rq) {
         service.updateSensor(rq);
         return ResponseEntity.status(HttpStatus.OK).build();
